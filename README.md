@@ -1,5 +1,7 @@
 # swimlane skill
 
+[![skills.sh installs](https://skills.sh/b/sp-daewoon/swimlane-skill)](https://skills.sh/sp-daewoon/swimlane-skill)
+
 단계별 절차를 스윔레인 한 장(HTML + PNG)으로 그려 주는 에이전트 스킬입니다. Claude Code와 Codex에서 모두 동작합니다.
 "이 배포 절차 스윔레인으로 그려줘", "주문 흐름 누가 어디서 뭘 하는지 그려줘"처럼 말하면, 에이전트가 코드·문서를 읽어 실제 단계를 뽑고 그림을 만듭니다.
 
