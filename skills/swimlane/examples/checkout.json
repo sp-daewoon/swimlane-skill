@@ -1,0 +1,27 @@
+{
+  "title": "주문 결제 — 단계별 절차",
+  "subtitle": "예시 · 점선 = 외부/비동기 · 빨강 = 확인 필요",
+  "lanes": [
+    { "id": "user", "name": "고객", "sub": "웹" },
+    { "id": "api", "name": "주문 API", "sub": "order-service" },
+    { "id": "pg", "name": "결제사", "sub": "PG" },
+    { "id": "db", "name": "저장소", "sub": "MySQL · Redis" },
+    { "id": "batch", "name": "비동기", "sub": "Queue · Worker" }
+  ],
+  "phases": [
+    { "name": "Phase 0. 주문 생성", "steps": [
+      { "lane": "user", "kind": "manual", "title": "주문하기 클릭", "lines": ["POST /v1/orders {items, couponId}"] },
+      { "lane": "db", "kind": "db", "title": "재고 선점", "lines": ["Redis DECRBY stock:{sku}", "INSERT orders status=PENDING"] }
+    ]},
+    { "name": "Phase 1. 결제", "steps": [
+      { "lane": "pg", "kind": "external", "title": "결제창 승인", "lines": ["POST /payments/confirm"], "note": "타임아웃 시 승인 여부 불명 — 조회 API로 재확인" },
+      { "lane": "api", "title": "결제 결과 검증", "lines": ["금액·주문번호 대조"] },
+      { "lane": "db", "kind": "db", "title": "주문 확정", "lines": ["UPDATE orders SET status=PAID"] }
+    ]},
+    { "name": "Phase 2. 후처리", "steps": [
+      { "lane": "batch", "kind": "async", "title": "출고 요청 발행", "lines": ["publish order.paid"] },
+      { "lane": "batch", "kind": "warn", "title": "실패 시 재처리", "lines": ["DLQ → 재시도 3회"], "note": "재고 원복 누락 여부 확인 필요" },
+      { "lane": "user", "title": "주문 완료 화면", "lines": ["GET /v1/orders/{id}"] }
+    ]}
+  ]
+}
