@@ -55,4 +55,5 @@ node <skill-dir>/scripts/swimlane.mjs spec.json --png --out out/flow    # out/fl
 
 - No Chrome found → HTML only; set `CHROME_PATH` to a Chrome/Chromium/Edge binary to enable PNG.
 - Example spec: `<skill-dir>/examples/checkout.json` (render it to see the style).
-- Keep cards terse: 1–3 lines each. More than ~25 steps → split into two diagrams by phase.
+- Keep cards terse: 1–3 lines each.
+- More than ~25 steps: do not split on your own. Before rendering, ask the user which they want — (a) one long diagram, (b) split into several diagrams at phase boundaries (name where you would cut), or (c) trim to the key steps — and follow their answer. If the user already said how, don't ask.
